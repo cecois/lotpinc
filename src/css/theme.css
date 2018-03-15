@@ -1,17 +1,17 @@
-/* Theme Styles 
+/* Theme Styles
  *
  * Styles for setting a custom theme for your site
- ===================================================*/ 
+ ===================================================*/
 
 p { font-size: 1.1em }
 .home-head {
-	background: url('../assets/images/apocalypse-architecture.jpg');
-	background-repeat: no-repeat; 
+	background: url('../img/apocalypse-architecture.jpg');
+	background-repeat: no-repeat;
 	background-size: cover;
 	background-position: center center;
 }
 
-.demo-cover-1 { background-image: url('../assets/images/apocalypse-architecture.jpg'); }
+.demo-cover-1 { background-image: url('../img/apocalypse-architecture.jpg'); }
 .clip-bg-demo1 {
-    background-image: url('../assets/images/vacation.jpg');
+  background-image: url('../img/vacation.jpg');
 }

@@ -37,7 +37,14 @@ var browsersync =()=>{
 /* ------------------------- IMG ------------- */
 
 var img = ()=>{
-  return GULP.src(paths.site.src+"/**/*.{jpg,png,gif,svg}")
+  return GULP.src([
+    paths.site.src+"assets/icons/bf44.png"
+    ,paths.site.src+"assets/icons/bf15.ico"
+    ,paths.site.src+"assets/icons/bf57.png"
+    ,paths.site.src+"assets/images/vacation.jpg"
+    ,paths.site.src+"assets/images/apocalypse-architecture.jpg"
+    ,paths.site.src+"assets/images/brutalist-framework512.jpg"
+    ])
   .pipe(PLUMBER())
   .pipe(IMAGEMIN({ optimizationLevel: 3, progressive: true, interlaced: true }))
   // .pipe(DEBUG())
@@ -45,14 +52,47 @@ var img = ()=>{
  }//img
 
 
+ /* ------------------------- JS ------------- */
+ var copyjs=  ()=>{
+  return GULP.src(
+    [
+    paths.site.src+"js/jquery.js"
+    ,paths.site.src+"js/brutalist.js"
+    ,paths.site.src+"js/start.brutalizing.js"
+    ]
+    )
+  .pipe(GULP.dest(paths.interm+"/js/"));
+};
+
+var jsify=  ()=>{
+  return GULP.src(
+    [
+    paths.interm+"/js/jquery.js"
+    ,paths.interm+"/js/brutalist.js"
+    ,paths.interm+"/js/start.brutalizing.js"
+    ]
+    )
+  .pipe(PLUMBER())
+  // .pipe(BABEL({ presets: ['es2015'] }))
+  .pipe(UGLIFY())
+  .pipe(CONCAT('lotpinc.min.js'))
+  .pipe(GULP.dest(paths.site.dist+"/js/"));
+};
+
 /* ------------------------- STYLE ------------- */
 var copycss=  ()=>{
   return GULP.src(
     [
-      paths.site.src+"/css/core/core.css"
-,paths.site.src+"/css/theme.css"
-      ]
-      )
+    paths.site.src+"css/core/grids/default-grid.css"
+    ,paths.site.src+"css/core/grids/flexboxgrid.css"
+    ,paths.site.src+"css/core/bfx.css"
+    ,paths.site.src+"css/core/buix.css"
+    ,paths.site.src+"css/core/butch.css"
+    ,paths.site.src+"css/core/default.css"
+    ,paths.site.src+"css/core/flavors.css"
+    ,paths.site.src+"css/theme.css"
+    ]
+    )
   .pipe(GULP.dest(paths.interm+"/css/"));
 };
 
@@ -60,8 +100,15 @@ var cssify = ()=>{
 
   return GULP.src([
     // paths.interm+"/css/*.{css}"
-paths.interm+"/css/core.css"
-,paths.interm+"/css/theme.css"
+    // ,paths.interm+"css/theme.css"
+    paths.interm+"/css/default-grid.css"
+    ,paths.interm+"/css/flexboxgrid.css"
+    ,paths.interm+"/css/bfx.css"
+    ,paths.interm+"/css/buix.css"
+    ,paths.interm+"/css/butch.css"
+    ,paths.interm+"/css/default.css"
+    ,paths.interm+"/css/flavors.css"
+    ,paths.interm+"/css/theme.css"
     ])
   // .pipe(DEBUG())
   .pipe(CONCAT('lotpinc.min.css'))
@@ -75,10 +122,10 @@ paths.interm+"/css/core.css"
 var fonts=  ()=>{
   return GULP.src(
     [
-      paths.site.src+"/Rauchwaren_Date_Mono-webfont.woff2"
-,paths.site.src+"/rauchwaren_regular-webfont.woff2"
-      ]
-      )
+    paths.site.src+"/Rauchwaren_Date_Mono-webfont.woff2"
+    ,paths.site.src+"/rauchwaren_regular-webfont.woff2"
+    ]
+    )
   .pipe(GULP.dest(paths.dest+"/fonts/"));
 };
 
@@ -86,7 +133,7 @@ var fonts=  ()=>{
 /* ------------------------- HTML ------------- */
 
 var html = ()=>{
-  return GULP.src(paths.site.src+"/index.html")
+  return GULP.src(paths.site.src+"index.html")
   .pipe(HTMLREPLACE({
     'style': {
       src: null
@@ -101,7 +148,7 @@ var html = ()=>{
   .pipe(RENAME({
     basename: 'index'
   }))
-  .pipe(GULP.dest(paths.site.dist+"/"))
+  .pipe(GULP.dest(paths.site.dist))
 }
 
 var clean = ()=>{
@@ -144,16 +191,18 @@ exports.fonts = fonts;
 exports.clean = clean;
 
 var develop = GULP.series(
-  clean
-  ,GULP.parallel(
+  // clean
+  GULP.parallel(
     img
     // follwing get further processing
     ,copycss
-    ,fonts
+    ,copyjs
+    // ,fonts
     )
   ,GULP.parallel(
     html
     ,cssify
+    ,jsify
     )
   ,GULP.parallel(
     browsersync
